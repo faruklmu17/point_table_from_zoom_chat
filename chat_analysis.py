@@ -1,27 +1,29 @@
+def create_points_table(text):
     lines = text.split('\n')
+    user_points = {}  # Dictionary to store points for each user
     
     for line in lines:
+        # Check if the line contains the expected pattern
         if " From " in line and " to Everyone:" in line:
+            # Extract the username
             username = line.split(" From ")[1].split(" to Everyone:")[0]
             
-            # Exclude Faruk Hasan
+            # Exclude "Faruk Hasan"
             if username != "Faruk Hasan":
+                # Increment the points for the username
                 user_points[username] = user_points.get(username, 0) + 1
-                
-                current_points = user_points.copy()
-                points_history.append((line, current_points))
     
-    return points_history
+    return user_points  # Return the cumulative points dictionary
 
-with open('paste.txt', 'r') as file:
+# Read the chat file
+with open('meeting_saved_chat.txt', 'r') as file:
     text_content = file.read()
 
+# Get the cumulative points table
 points_table = create_points_table(text_content)
 
+# Display the results
 print("Cumulative Points Table:")
-print("-" * 50)
-for entry in points_table:
-    message, points = entry
-    sorted_points = sorted(points.items(), key=lambda x: x[1], reverse=True)
-    points_str = " | ".join([f"{user}: {count}" for user, count in sorted_points])
-    print(f"{message} | {points_str}")
+print("-" * 30)
+for user, points in sorted(points_table.items(), key=lambda x: x[1], reverse=True):
+    print(f"{user}: {points}")
